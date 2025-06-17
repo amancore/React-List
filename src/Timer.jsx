@@ -69,6 +69,7 @@ function App() {
               text-center placeholder-gray-700 text-xl bg-amber-200 text-black placeholder:font-normal font-bold 
               hover:bg-gray-200 transition duration-200"
 								type="number"
+								min="0"
 								placeholder="HH"
 								name="hour"
 							/>
@@ -78,6 +79,7 @@ function App() {
 								text-center placeholder-gray-700 text-xl bg-amber-200 text-black placeholder:font-normal font-bold
 								hover:bg-gray-200 transition duration-200"
 								type="number"
+								min="0"
 								placeholder="MM"
 								name="minute"
 							/>
@@ -87,6 +89,7 @@ function App() {
 								text-center placeholder-gray-700 text-xl bg-amber-200 text-black placeholder:font-normal font-bold
 								hover:bg-gray-200 transition duration-200"
 								type="number"
+								min="0"
 								placeholder="SS"
 								name="second"
 							/>
