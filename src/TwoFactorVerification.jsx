@@ -1,10 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef} from 'react';
 import styles from './styles/TwoFactorVerification.module.css';
 
 function TwoFactorVerification() {
 	const inputRefs = useRef([null, null, null, null]);
 	const [code, setCode] = useState(['', '', '', '']);
-
 	function handleChange(e, idx) {
 		const data = e.target.value;
 		const regex = /^[0-9]$/;
@@ -34,10 +33,18 @@ function TwoFactorVerification() {
 			setCode(prev => {
 				const newCode = [...prev];
 				newCode[idx] = '';
+				if (idx > 0) {
+					inputRefs.current[idx - 1].focus();
+				}
 				return newCode;
 			});
 			inputRefs.current[idx - 1].focus();
-			console.log("b", idx, inputRefs.current[idx].value);
+		}
+		if(e.key === "ArrowLeft") {
+			inputRefs.current[idx - 1].focus();
+		}
+		if(e.key === "ArrowRight") {
+			inputRefs.current[idx + 1].focus();
 		}
 	}
 	function handlePaste(e) {
@@ -51,7 +58,8 @@ function TwoFactorVerification() {
 			}
 		}
 		console.log("code", clipdata, newCode);
-	}
+	} 
+	// document.documentElement.style.setProperty('--text-color', textColor);
 	return (
 		<div className={styles.app}>
 			<h1>Two Factor Verification</h1>
