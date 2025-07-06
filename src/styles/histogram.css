@@ -1,0 +1,40 @@
+.App{
+	height: 100vh;
+	width: 100%;
+}
+.container{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.box{
+	display: flex;
+	border-left: 1px solid #000;
+	border-bottom : 1px solid #000;
+	width: 50%;
+	height: 70%;
+	position: relative;
+}
+.box-y-axis{
+	display: flex;
+	flex-direction: column;
+	position : abslute;
+	bottom : 0;
+	left: -32px;
+	justify-content: space-between;
+	align-items: center;
+}
+.box-y-axis div{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background-color: #000;
+	color: #fff;
+	font-size: 12px;
+}
