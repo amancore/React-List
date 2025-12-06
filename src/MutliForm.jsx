@@ -66,7 +66,7 @@ function MutliForm() {
 	}
 	// atleast 6 char number also present
 	function validatePassword(password) {
-		return password.length >= 6 && /\d/.test(password);
+		return password.length >= 1;
 	}
 	return (
 		<div className="flex justify-center items-center h-screen bg-gray-100">
