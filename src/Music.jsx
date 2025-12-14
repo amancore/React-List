@@ -2,61 +2,92 @@ import { useRef, useState, useEffect } from "react";
 
 function Music() {
 	const tracks = [
-		{ title: "Track 1", source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-		{ title: "Track 2", source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-		{ title: "Track 3", source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+		{
+			title: "Track 1",
+			source: "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
+		},
+		{
+			title: "Track 2",
+			source: "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3",
+		},
 	];
 
-	const audioRef = useRef(new Audio(tracks[0].source));
+	const audioRef = useRef(new Audio());
 	const [currIdx, setCurrIdx] = useState(0);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [progress, setProgress] = useState(0);
+	const [currentTime, setCurrentTime] = useState(0);
+	const [duration, setDuration] = useState(0);
 
 	const playTrack = (idx) => {
-		audioRef.current.src = tracks[idx].source;
-		audioRef.current.play();
+		const audio = audioRef.current;
+		audio.pause();
+		audio.src = tracks[idx].source;
+		audio.load();
+		audio.play();
 		setCurrIdx(idx);
 		setIsPlaying(true);
 	};
 
 	const togglePlayPause = () => {
-		if (!audioRef.current.src) {
+		const audio = audioRef.current;
+		if (!audio.src) {
 			playTrack(currIdx);
 			return;
 		}
-		isPlaying ? audioRef.current.pause() : audioRef.current.play();
+		isPlaying ? audio.pause() : audio.play();
 		setIsPlaying(!isPlaying);
 	};
 
-	const handleNext = () => playTrack((currIdx + 1) % tracks.length);
-	const handlePrev = () => playTrack((currIdx - 1 + tracks.length) % tracks.length);
+	const handleNext = () =>
+		playTrack((currIdx + 1) % tracks.length);
+
+	const handlePrev = () =>
+		playTrack((currIdx - 1 + tracks.length) % tracks.length);
 
 	useEffect(() => {
 		const audio = audioRef.current;
-		const update = () =>
-			setProgress((audio.currentTime / audio.duration) * 100 || 0);
 
+		const update = () => {
+			setCurrentTime(audio.currentTime);
+			setDuration(audio.duration || 0);
+			setProgress((audio.currentTime / audio.duration) * 100 || 0);
+		};
+
+		audio.addEventListener("loadedmetadata", update);
 		audio.addEventListener("timeupdate", update);
-		return () => audio.removeEventListener("timeupdate", update);
+
+		return () => {
+			audio.removeEventListener("loadedmetadata", update);
+			audio.removeEventListener("timeupdate", update);
+		};
 	}, []);
 
 	const handleSeek = (e) => {
-		const percent = e.nativeEvent.offsetX / e.currentTarget.clientWidth;
-		audioRef.current.currentTime = percent * audioRef.current.duration;
+		const bar = e.currentTarget.getBoundingClientRect();
+		const clickX = e.clientX - bar.left;
+		const percent = clickX / bar.width;
+
+		audioRef.current.currentTime =
+			percent * audioRef.current.duration;
+
+		setProgress(percent * 100);
+		setCurrentTime(audioRef.current.currentTime);
+	};
+
+	const formatTime = (t) => {
+		const m = Math.floor(t / 60);
+		const s = Math.floor(t % 60);
+		return `${m}:${s < 10 ? "0" : ""}${s}`;
 	};
 
 	return (
 		<div>
 			<h3>{tracks[currIdx].title}</h3>
-
-			<div
-				onClick={handleSeek}
-				style={{ width: 300, height: 6, background: "#ddd", cursor: "pointer" }}
-			>
-				<div style={{ width: `${progress}%`, height: "100%", background: "#000" }} />
+			<div className="w-50 h-3 cursor-pointer bg-black" onClick={handleSeek} >
+				<div className="h-full bg-red-500" style={{ width: `${progress}%` }} />
 			</div>
-
-			<br />
+			<p>{formatTime(currentTime)} / {formatTime(duration)}</p>
 			<button onClick={handlePrev}>⏮️</button>
 			<button onClick={togglePlayPause}>
 				{isPlaying ? "⏸️ Pause" : "▶️ Play"}
